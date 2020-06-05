@@ -103,14 +103,16 @@
                              override-id))
               class method-name)
              (unless (eql original-module (ldb-module class))
-               (map-method-in-class-module
-                (lambda (<method>)
-                  (setf once t)
-                  (sw_override binding
-                               (unbash* <method> +method+)
-                               override-id))
-                (find-qclass-in-module original-module (qclass-name class))
-                method-name))))
+               (let ((super-qclass (find-qclass-in-module original-module (qclass-name class))))
+                 (unless (null super-qclass)
+                   (map-method-in-class-module
+                    (lambda (<method>)
+                      (setf once t)
+                      (sw_override binding
+                                   (unbash* <method> +method+)
+                                   override-id))
+                    super-qclass
+                    method-name))))))
       (map-qclass-precedence-list #'inform qclass))
     (unless once
       (warn "~a has no method named ~s, can't override it."
