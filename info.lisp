@@ -343,9 +343,10 @@
 (declaim (ftype (function (tagged) tagged) methodmap-class))
 (declaim (inline methodmap-class))
 (defun methodmap-class (<methodmap>)
-  (bash (cffi:foreign-slot-value (methodmap-struct <methodmap>)
-                                 '(:struct MethodMap)
-                                 'classid)
+  (bash (logand (cffi:foreign-slot-value (methodmap-struct <methodmap>)
+                                         '(:struct MethodMap)
+                                         'classid)
+                #xFFFF)
         (ldb-module <methodmap>)
         +class+))
 
