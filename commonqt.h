@@ -49,7 +49,15 @@ EXPORT void* sw_make_qbytearray(char *);
 EXPORT void sw_delete_qbytearray(void *q);
 EXPORT void* sw_make_qstring(char *);
 EXPORT void sw_delete_qstring(void *);
-EXPORT void* sw_make_metaobject(void *, char *, int *);
+EXPORT void* sw_make_metaobject(void *);
+EXPORT void* sw_make_metaobject_builder(char *, void *);
+EXPORT void sw_delete_metaobject_builder(void *);
+EXPORT void sw_add_classinfo_to_metaobject_builder(void *, char *, char *);
+EXPORT void sw_add_method_to_metaobject_builder(void *, char *);
+EXPORT void sw_add_signal_to_metaobject_builder(void *, char *);
+EXPORT void sw_add_slot_to_metaobject_builder(void *, char *);
+
+
 EXPORT void sw_delete(void *p);
 EXPORT void* sw_qstring_to_utf8(void* s);
 EXPORT const void* sw_qstring_to_utf16(void*);
