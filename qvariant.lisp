@@ -87,7 +87,7 @@
 
 (defun unvariant-non-core-map ()
   (with-cache ()
-    (let ((new-map (make-array 87)))
+    (let ((new-map (make-array 200)))
       (loop for type in *unvariant-non-core-types*
             for enum = (enum-value
                         (interpret-call "QVariant" type))

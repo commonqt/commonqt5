@@ -85,10 +85,36 @@
   (qstringlist :pointer)
   (index :int))
 
+
+;;;;;;;;;;;;;;;;;;; QMETAOBJECT ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defcfun "sw_make_metaobject" :pointer
+  (builder :pointer))
+
+(defcfun "sw_make_metaobject_builder" :pointer
   (parent :pointer)
-  (str :pointer)
-  (data :pointer))
+  (name :pointer))
+
+(defcfun "sw_delete_metaobject_builder" :pointer
+  (builder :pointer))
+
+(defcfun "sw_add_method_to_metaobject_builder" :void
+  (builder :pointer)
+  (signature :pointer))
+
+(defcfun "sw_add_signal_to_metaobject_builder" :void
+  (builder :pointer)
+  (signature :pointer))
+
+(defcfun "sw_add_slot_to_metaobject_builder" :void
+  (builder :pointer)
+  (signature :pointer))
+
+(defcfun "sw_add_classinfo_to_metaobject_builder" :void
+  (builder :pointer)
+  (key :pointer)
+  (valuesignature :pointer))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defcfun "sw_delete" :void
   (stack :pointer))
