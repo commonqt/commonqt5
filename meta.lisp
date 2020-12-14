@@ -150,9 +150,12 @@
     (setf (class-binding qt-class)
           (sw_make_dynamic_binding (module-ref <module>)
                                    (qobject-pointer
-                                    (slot-value qt-class 'qmetaobject))
-                                   (meta-object-method-index qt-class)
-                                   (metacall-method-index qt-class)
+                                    (or (slot-value qt-class 'qmetaobject)
+                                        (null-qobject "QMetaObject")))
+                                   (or (meta-object-method-index qt-class)
+                                       0)
+                                   (or (metacall-method-index qt-class)
+                                       0)
                                    (cffi:callback deletion-callback)
                                    (cffi:callback dynamic-invocation-callback)
                                    (cffi:callback metacall-callback)))))
@@ -161,8 +164,7 @@
   (check-type qt-class qt-class)
   (with-slots (effective-class qmetaobject smoke-generation generation)
       qt-class
-    (unless (and qmetaobject
-		 effective-class
+    (unless (and effective-class
 		 (eq smoke-generation *cached-objects*))
       ;; clear everything out to ensure a clean state in case of errors
       ;; in the following forms
@@ -185,14 +187,15 @@
                               (#_staticMetaObject class))
                              (t
                               (null-qobject (find-qclass "QMetaObject"))))))
-              (make-metaobject parent
-                               (let ((name (class-name qt-class)))
-                                 (format nil "~A::~A"
-                                         (package-name (symbol-package name))
-                                         (symbol-name name)))
-                               (class-class-infos qt-class)
-                               (class-signals qt-class)
-                               (class-slots qt-class))))
+              (unless (qt:null-qobject-p parent)
+                (make-metaobject parent
+                                 (let ((name (class-name qt-class)))
+                                   (format nil "~A::~A"
+                                           (package-name (symbol-package name))
+                                           (symbol-name name)))
+                                 (class-class-infos qt-class)
+                                 (class-signals qt-class)
+                                 (class-slots qt-class)))))
       (set-class-binding qt-class)
       (inform-cpp-about-overrides qt-class)
       ;; invalidate call site caches
