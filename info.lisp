@@ -205,6 +205,8 @@
       (find-qclass (qclass-name <class>))
       <class>))
 
+(define-condition qclass-not-found (simple-error) ())
+
 (defun instance-qclass (ptr &optional (errorp t))
   (or (cffi:with-foreign-object (&smoke :pointer)
         (cffi:with-foreign-object (&index :short)
@@ -215,7 +217,9 @@
                     (module-number smoke)
                     +class+)))))
       (when errorp
-        (error "Class not found for ~S" ptr))))
+        (error 'qclass-not-found
+               :format-control "Class not found for ~S"
+               :format-args (list ptr)))))
 
 (defun find-qclass (name &optional (errorp t))
   (etypecase name
@@ -232,7 +236,9 @@
                        (module-number smoke)
                        +class+)))))
          (when errorp
-           (error "Class not found: ~A" name))))))
+           (error 'qclass-not-found
+                  :format-control "Class not found: ~A"
+                  :format-args (list name)))))))
 
 (defun find-qclass-in-module (<module> name &optional (allow-external t))
   (declare (type module-number <module>))

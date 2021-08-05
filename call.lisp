@@ -222,11 +222,17 @@
     (map-qmethod-argument-types
      (lambda (arg-type)
        (let ((fix-type (pop fix-types)))
-         (unless (and (or (not fix-type)
-                          (eq (qtype-interned-name arg-type)
-                              fix-type))
-                      (can-marshal-p (pop args) arg-type))
-           (return))))
+         ;; ignore methods that reference unknown classes
+         ;; FIXME: this should probably be handled by SMOKE itself who shouldn't reference
+         ;; methods for classes that he doesn't know/ignores
+         (handler-bind ((qclass-not-found (lambda (condition)
+                                            (declare (ignore condition))
+                                            (return))))
+           (unless (and (or (not fix-type)
+                            (eq (qtype-interned-name arg-type)
+                                fix-type))
+                        (can-marshal-p (pop args) arg-type))
+             (return)))))
      method)
     t))
 
