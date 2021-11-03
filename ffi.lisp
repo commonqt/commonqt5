@@ -128,20 +128,8 @@
 (declaim (inline convert-qstring-data))
 (defun convert-qstring-data (data)
   (declare (optimize speed))
-  #+nil
-  ;; fixme: babel doesn't get endianness right in utf-16.
-  (cffi:foreign-string-to-lisp (sw_qstring_to_utf16 raw-ptr)
-                               :encoding :utf-16)
-  ;; handcode instead:
-  (let* ((nbytes (cffi::foreign-string-length data :encoding :utf-16))
-         (res (make-string (truncate nbytes 2))))
-    (declare (fixnum nbytes))
-    (loop for i by 2 below nbytes
-          for j fixnum from 0
-          for code = (cffi:mem-ref data :unsigned-short i)
-          until (zerop code)
-          do (setf (char res j) (code-char code)))
-    res))
+  (cffi:foreign-string-to-lisp
+   data :encoding #+little-endian :utf-16le #+big-endian :utf-16be))
 
 (defun qstring-pointer-to-lisp (raw-ptr)
   (declare (optimize speed))
