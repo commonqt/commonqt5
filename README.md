@@ -78,7 +78,7 @@ qmake && nmake && nmake install
 ```
 
 #### qtwebengine
-Repo: https://gerrit.siscog/admin/repos/open-source/qtwebengine, branch: 5.14.2	
+Repo: https://github.com/qt/qtwebengine, branch: 5.14.2	
 ```
 qmake -r && nmake && nmake install
 ```
